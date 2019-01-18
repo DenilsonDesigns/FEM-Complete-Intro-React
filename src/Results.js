@@ -1,6 +1,8 @@
 import React from "react";
 import pf from "petfinder-client";
 import Pet from "./Pet";
+import SearchBox from "./SearchBox";
+import { Consumer } from "./SearchContext";
 
 const petfinder = pf({
   key: process.env.API_KEY,
@@ -15,47 +17,53 @@ class Results extends React.Component {
       pets: []
     };
   }
-
   componentDidMount() {
+    this.search();
+  }
+  search = () => {
     petfinder.pet
-      .find({ output: "full", location: "Seattle, WA" })
-      .then(res => {
+      .find({
+        location: this.props.searchParams.location,
+        animal: this.props.searchParams.animal,
+        breed: this.props.searchParams.breed,
+        output: "full"
+      })
+      .then(data => {
         let pets;
-        if (res.petfinder.pets && res.petfinder.pets.pet) {
-          if (Array.isArray(res.petfinder.pets.pet)) {
-            pets = res.petfinder.pets.pet;
+        if (data.petfinder.pets && data.petfinder.pets.pet) {
+          if (Array.isArray(data.petfinder.pets.pet)) {
+            pets = data.petfinder.pets.pet;
           } else {
-            pets = [res.petfinder.pets.pet];
+            pets = [data.petfinder.pets.pet];
           }
         } else {
           pets = [];
         }
-
         this.setState({
-          pets
+          pets: pets
         });
       });
-  }
-
+  };
   render() {
     return (
       <div className="search">
-        {this.state.pets.map(el => {
+        <SearchBox search={this.search} />
+        {this.state.pets.map(pet => {
           let breed;
-          if (Array.isArray(el.breeds.breed)) {
-            breed = el.breeds.breed.join(", ");
+          if (Array.isArray(pet.breeds.breed)) {
+            breed = pet.breeds.breed.join(", ");
           } else {
-            breed = el.breeds.breed;
+            breed = pet.breeds.breed;
           }
           return (
             <Pet
-              id={el.id}
-              key={el.id}
+              animal={pet.animal}
+              key={pet.id}
+              name={pet.name}
               breed={breed}
-              name={el.name}
-              animal={el.animal}
-              media={el.media}
-              location={`${el.contact.city}, ${el.contact.state}`}
+              media={pet.media}
+              location={`${pet.contact.city}, ${pet.contact.state}`}
+              id={pet.id}
             />
           );
         })}
@@ -64,4 +72,10 @@ class Results extends React.Component {
   }
 }
 
-export default Results;
+export default function ResultsWithContext(props) {
+  return (
+    <Consumer>
+      {context => <Results {...props} searchParams={context} />}
+    </Consumer>
+  );
+}
