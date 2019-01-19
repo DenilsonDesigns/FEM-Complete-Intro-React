@@ -39,9 +39,12 @@
     "react-test-renderer": "^16.7.0"
   },
   "dependencies": {
+    "@emotion/core": "^10.0.5",
+    "@emotion/styled": "^10.0.5",
     "@reach/router": "^1.2.1",
     "petfinder-client": "0.0.3",
     "react": "^16.7.0",
-    "react-dom": "^16.7.0"
+    "react-dom": "^16.7.0",
+    "react-emotion": "^10.0.0"
   }
 }
