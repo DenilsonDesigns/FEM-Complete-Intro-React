@@ -10,7 +10,9 @@
     "test:coverage": "jest --silent --coverage",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
     "lint": "eslint \"src/**/*.{js,jsx}\" --quiet",
-    "dev": "parcel src/index.html"
+    "dev": "parcel src/index.html",
+    "build": "parcel build --public-url ./dist/ src/index.html",
+    "start": "npm run build && babel-node server.js"
   },
   "repository": {
     "type": "git",
@@ -41,6 +43,8 @@
     "@emotion/core": "^10.0.5",
     "@emotion/styled": "^10.0.5",
     "@reach/router": "^1.2.1",
+    "babel-cli": "^6.26.0",
+    "express": "^4.16.4",
     "parcel-bundler": "^1.11.0",
     "petfinder-client": "0.0.3",
     "react": "^16.7.0",
